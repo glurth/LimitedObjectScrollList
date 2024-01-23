@@ -2,20 +2,54 @@ using UnityEngine.Events;
 
 namespace EyE.Unity.UI
 {
-
+    /// <summary>
+    /// Interface for handling selection events.
+    /// </summary>
     public interface ITriggerOnSelect
     {
-        public UnityEvent onSelectEvent { get; }
+        /// <summary>
+        /// Event triggered when the UI element is selected.
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user to be able to respond to selection events on your UI element.
+        /// </remarks>
+        UnityEvent onSelectEvent { get; }
     }
 
+    /// <summary>
+    /// Interface for handling hover events.
+    /// </summary>
     public interface ITriggerOnHover
     {
-        public UnityEvent onPointerEnterEvent { get; }
-        public UnityEvent onPointerExitEvent { get; }
+        /// <summary>
+        /// Event triggered when the pointer enters the UI element.
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user to be able to respond to pointer enter events on your UI element.
+        /// </remarks>
+        UnityEvent onPointerEnterEvent { get; }
+
+        /// <summary>
+        /// Event triggered when the pointer exits the UI element.
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user to be able to respond to pointer exit events on your UI element.
+        /// </remarks>
+        UnityEvent onPointerExitEvent { get; }
     }
 
+    /// <summary>
+    /// Interface for handling click events.
+    /// </summary>
     public interface ITriggerOnClick
     {
-        public UnityEvent onClickEvent { get; }
+        /// <summary>
+        /// Event triggered when the UI element is clicked.
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user to be able to respond to click events on your UI element.
+        /// </remarks>
+        UnityEvent onClickEvent { get; }
     }
+
 }

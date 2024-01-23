@@ -4,9 +4,9 @@ namespace EyE.Unity.UI
 {
     /// <inheritdoc/>
     /// <summary>
-    /// Concrete implementation of a LimitedObjectScrollListBase.  It displays data that consists of strings, via a TextDisplay prefabs.
+    /// Concrete implementation of a LimitedObjectScrollListBase.  It displays a list that consists of strings, via a TextDisplay prefabs.
     /// </summary>
-    public class LimitedTextScrollList : LimitedObjectScrollListBase<string, TextDisplay>
+    public class LimitedTextObjectScrollList : LimitedObjectScrollListBase<string, TextDisplay>
     {
         public List<string> stringList;
         
