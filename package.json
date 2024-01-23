@@ -1,0 +1,12 @@
+{
+  "name": "com.glurth.limittedobjectscrollist",
+  "version": "1.0.0",
+  "displayName": "LimitedObjectScrollList",
+  "description": "Displays scroll list using minimal scene objects",
+  "unity": "2019.1",
+  "dependencies": {},
+  "author": {
+    "name": "Glurth"
+  },
+  "hideInEditor": "false"
+}
