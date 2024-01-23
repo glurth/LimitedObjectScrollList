@@ -11,7 +11,7 @@ namespace EyE.Unity.UI
     /// <typeparam name="TListElementType">The type of elements in the full list.</typeparam>
     /// <typeparam name="TLineElementPreFabType">The type of prefab used to display list elements. 
     /// Must implement the <see cref="IDisplay{TListElementType}"/> interface and must be a Monobehavior, to ensure proper functionality.</typeparam>
-    abstract public class LimitedObjectScrollListBase<TListElementType,TLineElementPreFabType>:MonoBehaviour where TLineElementPreFabType : MonoBehaviour,IDisplay<TListElementType>
+    public class LimitedObjectScrollList<TListElementType,TLineElementPreFabType>:MonoBehaviour where TLineElementPreFabType : MonoBehaviour,IDisplay<TListElementType>
     {
         /// <summary>
         /// The prefab used to display individual list elements.
