@@ -7,10 +7,13 @@ namespace EyE.Unity.UI
 {
     /// <summary>
     /// Represents a scrollable list of unlimited objects, and displays them using a limited/minimal number of instantiated UI Objects.
+    /// To use this class, call the SetList function, and pass in the list you want displayed.  This class will then automatically instantiate and/or place a minimal number of prefabs to display the list elements.
+    /// You may, if the prefab supports it, subscribe to UI events that happen on/to any list elements via the ``UnityEvent<int> onXXXEvent`` members. When triggered by the user, these events will pass an index to the list element the event occurred on, to subscribers.
     /// </summary>
     /// <typeparam name="TListElementType">The type of elements in the full list.</typeparam>
     /// <typeparam name="TLineElementPreFabType">The type of prefab used to display list elements. 
-    /// Must implement the <see cref="IDisplay{TListElementType}"/> interface and must be a Monobehavior, to ensure proper functionality.</typeparam>
+    /// It must implement the <see cref="IDisplay{TListElementType}"/> interface and must be a Monobehavior, to ensure proper functionality.  
+    /// If you would like to detect UI Events on the list elements, the Prefab must provide the appropriate interface(s): ITriggerOnSelect, ITriggerOnHover, ITriggerOnClick. </typeparam>
     public class LimitedObjectScrollList<TListElementType,TLineElementPreFabType>:MonoBehaviour where TLineElementPreFabType : MonoBehaviour,IDisplay<TListElementType>
     {
         /// <summary>
@@ -159,6 +162,7 @@ namespace EyE.Unity.UI
                
                 onElementInView.Invoke(i);
             }
+            //if any other instantiatedDisplayElements, that were created previously, exist: deactivate them.
             for (int i = numberOfElementsToCreate; i < instantiatedDisplayElements.Count; i++)
             {
                 instantiatedDisplayElements[i].gameObject.SetActive(false);
@@ -175,13 +179,15 @@ namespace EyE.Unity.UI
         {
             if (fullList == null || fullList.Count==0) return;
             float scrollPos = contentTransform.localPosition.y;
+            //see if the user has scrolled enough that we need to reassign/update display values.  if not, do nothing/return
             if (lastScrollPos!= float.NegativeInfinity && Mathf.Abs(scrollPos - lastScrollPos) < lineElementHeight) return;
             lastScrollPos = scrollPos;
             int startIndex = Mathf.FloorToInt(scrollPos / lineElementHeight);
             if (startIndex < 0) startIndex = 0;
-            currentStartIndex = startIndex;
+            currentStartIndex = startIndex;// record in a member for use by event triggers
             float startIndexPos = startIndex * lineElementHeight;
-            float endIndexPos = startIndexPos + (instantiatedDisplayElements.Count * lineElementHeight);
+            // float endIndexPos = startIndexPos + (instantiatedDisplayElements.Count * lineElementHeight);
+            
             // move all display elements and populate
             float posCounter = startIndexPos + lineElementHeight/2f;
             for (int i = 0; i < instantiatedDisplayElements.Count; i++)

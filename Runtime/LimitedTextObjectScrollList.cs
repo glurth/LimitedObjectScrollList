@@ -8,9 +8,9 @@ namespace EyE.Unity.UI
     /// </summary>
     public class LimitedTextObjectScrollList : LimitedObjectScrollList<string, TextDisplay>
     {
+
+        //for testing.  while this list may contain 10k items, only a few TextDisplay objects, just enough to fill the viewport, will be created in the scene,
         public List<string> stringList;
-        
-        //for testing
         private void Start()
         {
             for (int i = 0; i < 10000; i++)
