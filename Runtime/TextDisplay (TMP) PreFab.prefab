@@ -172,6 +172,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextDisplay (TMP) PreFab
       objectReference: {fileID: 0}
+    - target: {fileID: 7238303529577646141, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -182,6 +186,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2436017929403840567, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4914327636926846016}
+    - targetCorrespondingSourceObject: {fileID: 2436017929403840567, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -3407867324331014552}
   m_SourcePrefab: {fileID: 100100000, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}
 --- !u!1 &1851826701068569030 stripped
 GameObject:
@@ -201,6 +208,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textControl: {fileID: 6633491368678341068}
+--- !u!114 &-3407867324331014552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851826701068569030}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 5.41, y: 1.83}
+  m_UseGraphicAlpha: 0
 --- !u!224 &3961994712695876107 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1046716136729156602, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}

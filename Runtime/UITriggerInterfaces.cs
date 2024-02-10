@@ -82,6 +82,7 @@ namespace EyE.Unity.UI
         UnityEvent<T> onValueEditEnd { get; }
     }
 
+    /*  validate reqs more parmas to do
     /// <summary>
     /// Interface for handling value validate events.
     /// </summary>
@@ -94,5 +95,5 @@ namespace EyE.Unity.UI
         /// Implement this interface if you want the user of your class to be able to respond to valueChanged events on your UI element.
         /// </remarks>
         UnityEvent<T> onValueValidate { get; }
-    }
+    }*/
 }

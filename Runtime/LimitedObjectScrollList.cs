@@ -7,13 +7,15 @@ namespace EyE.Unity.UI
 {
     /// <summary>
     /// Represents a scrollable list of unlimited objects, and displays them using a limited/minimal number of instantiated UI Objects.
+    /// It is recommended that you create your own, concrete class, derived from this one, and add it as a component to an object with a scroll list.
     /// To use this class, call the SetList function, and pass in the list you want displayed.  This class will then automatically instantiate and/or place a minimal number of prefabs to display the list elements.
-    /// You may, if the prefab supports it, subscribe to UI events that happen on/to any list elements via the ``UnityEvent<int> onXXXEvent`` members. When triggered by the user, these events will pass an index to the list element the event occurred on, to subscribers.
+    /// You may, if the prefab supports it, subscribe to UI events that happen on/to any list elements via the ``UnityEvent<int> onXXXEvent`` members. 
+    /// When triggered by the user, these events will pass an index to the list element the event occurred on, to subscribers.
     /// </summary>
     /// <typeparam name="TListElementType">The type of elements in the full list.</typeparam>
     /// <typeparam name="TLineElementPreFabType">The type of prefab used to display list elements. 
     /// It must implement the <see cref="IDisplay{TListElementType}"/> interface and must be a Monobehavior, to ensure proper functionality.  
-    /// If you would like to detect UI Events on the list elements, the Prefab must provide the appropriate interface(s): ITriggerOnSelect, ITriggerOnHover, ITriggerOnClick, ITriggerOnValueChange<TListElementType>. </typeparam>
+    /// If you would like to detect UI Events on the list elements, the Prefab must provide the appropriate interface(s): ITriggerOnSelect, ITriggerOnHover, ITriggerOnClick, ITriggerOnValueChange<TListElementType>,ITriggerOnValueEditEnd<TListElementType>, ITriggerOnValueValidate<TListElementType>. </typeparam>
     public class LimitedObjectScrollList<TListElementType,TLineElementPreFabType>:MonoBehaviour where TLineElementPreFabType : MonoBehaviour,IDisplay<TListElementType>
     {
         /// <summary>
@@ -118,13 +120,18 @@ namespace EyE.Unity.UI
         }
 
         /// <summary>
+        /// Event triggered when an element in the list becomes visible on screen.  The int parameter represents the index into the full list.
+        /// </summary>
+        public UnityEvent<int> onElementInView { get; } = new UnityEvent<int>();
+
+        /// <summary>
         /// When set to true onValueChangedEvent invocations will effect the contents of the fullList.
         /// </summary>
         [Tooltip("When set to true onValueChangedEvent invocations will effect the contents of the fullList.")]
         public bool isReadOnly = true;
 
         /// <summary>
-        /// Event triggered when an element in the list is clicked.
+        /// Event triggered when an element in the list has it's value changed from ANY source.
         /// The int parameter represents the index of the clicked element in the full list.
         /// The TListElementType parameter passes the new changed value.
         /// Note: The prefab used (TLineElementPreFabType), must implement the <see cref="ITriggerOnValueChange<TListElementType>"/> interface for this event to work.
@@ -136,11 +143,10 @@ namespace EyE.Unity.UI
         //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementValueChanged(int displayElementNumber, TListElementType newValue)
         {
-            Debug.Log("Limited list display element value changed: " + displayElementNumber);
+          //  Debug.Log("Limited list display element value changed: " + displayElementNumber);
             int index = displayElementNumber + currentStartIndex;
             if (!isReadOnly)
             {
-                fullList[index] = newValue;
                 onValueChangedEvent.Invoke(index, newValue);
             }
             else
@@ -150,10 +156,55 @@ namespace EyE.Unity.UI
         }
 
         /// <summary>
-        /// Event triggered when an element in the list becomes visible on screen.  The int parameter represents the index into the full list.
+        /// Event triggered when the user has finished editing the value of an element on the list.
+        /// The int parameter represents the index of the clicked element in the full list.
+        /// The TListElementType parameter passes the new changed value.
+        /// Note: The prefab used (TLineElementPreFabType), must implement the <see cref="ITriggerOnValueChange<TListElementType>"/> interface for this event to work.
         /// </summary>
-        public UnityEvent<int> onElementInView { get; } = new UnityEvent<int>();
+        public UnityEvent<int, TListElementType> onValueEditEndEvent => _onValueEditEndEvent;
+        [SerializeField]
+        [Tooltip("Event triggered when the user has finished editing the value of an element on the list.")]
+        private UnityEvent<int, TListElementType> _onValueEditEndEvent = new UnityEvent<int, TListElementType>();
+        //this function is added as a listener to prefabs when they are instantiated.
+        void InternalHandleElementEditEnd(int displayElementNumber, TListElementType newValue)
+        {
+            Debug.Log("Limited list display element value edit complete: " + displayElementNumber);
+            int index = displayElementNumber + currentStartIndex;
+            if (!isReadOnly)
+            {
+                fullList[index] = newValue;
+                onValueEditEndEvent.Invoke(index, newValue);
+            }
+            else
+            {
+                instantiatedDisplayElements[displayElementNumber].Display(fullList[index]);
+            }
+        }
 
+        /// <summary>
+        /// Event triggered when an element in the list has it's value changed by the user.
+        /// The int parameter represents the index of the clicked element in the full list.
+        /// The TListElementType parameter passes the new changed value.
+        /// Note: The prefab used (TLineElementPreFabType), must implement the <see cref="ITriggerOnValueChange<TListElementType>"/> interface for this event to work.
+        /// </summary>
+        public UnityEvent<int, TListElementType> onValidateEvent => _onValidateEvent;
+        [SerializeField]
+        [Tooltip("Event triggered when the user has finished editing the value of an element on the list.")]
+        private UnityEvent<int, TListElementType> _onValidateEvent = new UnityEvent<int, TListElementType>();
+        //this function is added as a listener to prefabs when they are instantiated.
+        void InternalHandleElementValidate(int displayElementNumber, TListElementType newValue)
+        {
+            Debug.Log("Limited list display element value validate: " + displayElementNumber);
+            int index = displayElementNumber + currentStartIndex;
+            if (!isReadOnly)
+            {
+                _onValidateEvent.Invoke(index, newValue);
+            }
+            else
+            {
+                instantiatedDisplayElements[displayElementNumber].Display(fullList[index]);
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether any item in the scroll list currently has focus.
@@ -211,6 +262,14 @@ namespace EyE.Unity.UI
                     ITriggerOnValueChange<TListElementType> changeable = newLineElement.GetComponentInChildren<ITriggerOnValueChange<TListElementType>>();
                     if (changeable != null)
                         changeable.onValueChanged.AddListener((TListElementType data) => { InternalHandleElementValueChanged(displayElementIndex, data); });
+
+                    ITriggerOnValueEditEnd<TListElementType> editEndable = newLineElement.GetComponentInChildren<ITriggerOnValueEditEnd<TListElementType>>();
+                    if (editEndable != null)
+                        editEndable.onValueEditEnd.AddListener((TListElementType data) => { InternalHandleElementEditEnd(displayElementIndex, data); });
+
+                    /*ITriggerOnValueValidate<TListElementType> validatable = newLineElement.GetComponentInChildren<ITriggerOnValueValidate<TListElementType>>();
+                    if (validatable != null)
+                        validatable.onValueValidate.AddListener((TListElementType data) => { InternalHandleElementValidate(displayElementIndex, data); });*/
                 }
                 TLineElementPreFabType displayElement = instantiatedDisplayElements[i];
                 displayElement.gameObject.SetActive(true);
