@@ -94,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2436017929403840567, guid: a284f8c80977f4a4fbbff0a5ac8169ee, type: 3}
       propertyPath: m_Name
-      value: Text (TMP) Variant
+      value: TextDisplay (TMP) PreFab
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

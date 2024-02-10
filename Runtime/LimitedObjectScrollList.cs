@@ -143,6 +143,7 @@ namespace EyE.Unity.UI
                     int displayElementIndex = i;  // this is not the index to the full list element, rather it is the index of the display element of which we have a limited number
                                                   //we put i it into  new var to "descope" it for use below.
 
+                    //Add Listeners to any/all available Triggers on the newly instantiated list element prefab
                     ITriggerOnClick clicker = newLineElement.GetComponentInChildren<ITriggerOnClick>();
                     if (clicker != null)
                         clicker.onClickEvent.AddListener(() => { InternalHandleElementClick(displayElementIndex); });
