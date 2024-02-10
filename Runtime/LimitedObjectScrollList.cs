@@ -13,29 +13,34 @@ namespace EyE.Unity.UI
     /// <typeparam name="TListElementType">The type of elements in the full list.</typeparam>
     /// <typeparam name="TLineElementPreFabType">The type of prefab used to display list elements. 
     /// It must implement the <see cref="IDisplay{TListElementType}"/> interface and must be a Monobehavior, to ensure proper functionality.  
-    /// If you would like to detect UI Events on the list elements, the Prefab must provide the appropriate interface(s): ITriggerOnSelect, ITriggerOnHover, ITriggerOnClick. </typeparam>
+    /// If you would like to detect UI Events on the list elements, the Prefab must provide the appropriate interface(s): ITriggerOnSelect, ITriggerOnHover, ITriggerOnClick, ITriggerOnValueChange<TListElementType>. </typeparam>
     public class LimitedObjectScrollList<TListElementType,TLineElementPreFabType>:MonoBehaviour where TLineElementPreFabType : MonoBehaviour,IDisplay<TListElementType>
     {
         /// <summary>
         /// The prefab used to display individual list elements.
         /// </summary>
+        [Tooltip("The prefab used to display individual list elements.")]
         public TLineElementPreFabType lineElementPreFab;
         /// <summary>
         /// The height of each line element in the list.
         /// </summary>
+        [Tooltip("The height of each line element in the list.")]
         public float lineElementHeight=40;
         /// <summary>
         /// The ScrollRect responsible for scrolling the list.
         /// </summary>
+        [Tooltip("The ScrollRect responsible for scrolling the list.")]
         public ScrollRect controller;
         /// <summary>
         /// The RectTransform representing the view area of the scrollable list- this is usually a child AND member of the ScrollRect
         /// </summary>
-        public RectTransform viewRect;
+        [Tooltip("The RectTransform representing the view area of the scrollable list- this is usually a child AND member of the ScrollRect")]
+        public RectTransform viewRectTransform;
         /// <summary>
         /// The RectTransform representing the content area of the scrollable list- this is usually a child AND member of the ScrollRect
         /// </summary>
-        public RectTransform contentTransform;
+        [Tooltip("The RectTransform representing the content area of the scrollable list- this is usually a child AND member of the ScrollRect")]
+        public RectTransform contentRectTransform;
 
         //stores a reference to the full list of data to be displayed
         List<TListElementType> fullList;
@@ -57,21 +62,28 @@ namespace EyE.Unity.UI
         }
 
         /// <summary>
-        /// Event triggered when the pointer enters an element in the list.
+        /// Event triggered when an element in the list becomes 'selected'.
         /// The int parameter represents the index of the element in the full list.
-        /// Note: The prefab used (TLineElementPreFabType) must implement the ITriggerOnHover interface for this event to work.
+        /// Note: The prefab used (TLineElementPreFabType) must implement the <see cref="ITriggerOnSelect"/> interface for this event to work.
         /// </summary>
-        public UnityEvent<int> onSelectEvent { get; } = new UnityEvent<int>();
+        public UnityEvent<int> onSelectEvent => _onSelectEvent;
+        [SerializeField][Tooltip("Event triggered when an element in the list becomes 'selected'.")]
+        private UnityEvent<int> _onSelectEvent = new UnityEvent<int>();
+        //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementSelect(int displayElementNumber)
         {
             onSelectEvent.Invoke(displayElementNumber + currentStartIndex);
         }
+
         /// <summary>
-        /// Event triggered when the pointer exits an element in the list.
+        /// Event triggered when the pointer enters an element in the list.
         /// The int parameter represents the index of the element in the full list.
-        /// Note: The prefab used (TLineElementPreFabType) must implement the ITriggerOnHover interface for this event to work.
+        /// Note: The prefab used (TLineElementPreFabType) must implement the <see cref="ITriggerOnHover"/> interface for this event to work.
         /// </summary>
-        public UnityEvent<int> onPointerEnterEvent { get; } = new UnityEvent<int>();
+        public UnityEvent<int> onPointerEnterEvent => _onPointerEnterEvent;
+        [SerializeField][Tooltip("Event triggered when the pointer enters an element in the list.")]
+        private UnityEvent<int> _onPointerEnterEvent = new UnityEvent<int>();
+        //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementPointerEnter(int displayElementNumber)
         {
             onPointerEnterEvent.Invoke(displayElementNumber + currentStartIndex);
@@ -80,9 +92,12 @@ namespace EyE.Unity.UI
         /// <summary>
         /// Event triggered when the pointer exits an element in the list.
         /// The int parameter represents the index of the element in the full list.
-        /// Note: The prefab used (TLineElementPreFabType) must implement the ITriggerOnHover interface for this event to work.
+        /// Note: The prefab used (TLineElementPreFabType) must implement the <see cref="ITriggerOnHover"/> interface for this event to work.
         /// </summary>
-        public UnityEvent<int> onPointerExitEvent { get; } = new UnityEvent<int>();
+        public UnityEvent<int> onPointerExitEvent => _onPointerExitEvent;
+        [SerializeField][Tooltip("Event triggered when the pointer exits an element in the list.")]
+        private UnityEvent<int> _onPointerExitEvent = new UnityEvent<int>();
+        //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementPointerExit(int displayElementNumber)
         {
             onPointerExitEvent.Invoke(displayElementNumber + currentStartIndex);
@@ -91,26 +106,52 @@ namespace EyE.Unity.UI
         /// <summary>
         /// Event triggered when an element in the list is clicked.
         /// The int parameter represents the index of the clicked element in the full list.
-        /// Note: The prefab used (TLineElementPreFabType) must implement the ITriggerOnClick interface for this event to work.
+        /// Note: The prefab used (TLineElementPreFabType), must implement the <see cref="ITriggerOnClick"/> interface for this event to work.
         /// </summary>
-        public UnityEvent<int> onClickEvent { get; } = new UnityEvent<int>();
+        public UnityEvent<int> onClickEvent => _onClickEvent;
+        [SerializeField][Tooltip("Event triggered when an element in the list is clicked.")]
+        private UnityEvent<int> _onClickEvent = new UnityEvent<int>();
+        //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementClick(int displayElementNumber)
         {
-            Debug.Log("Limited list onclick display element: " + displayElementNumber);
             onClickEvent.Invoke(displayElementNumber + currentStartIndex);
         }
 
+        /// <summary>
+        /// When set to true onValueChangedEvent invocations will effect the contents of the fullList.
+        /// </summary>
+        [Tooltip("When set to true onValueChangedEvent invocations will effect the contents of the fullList.")]
         public bool isReadOnly = true;
-        public UnityEvent<int, TListElementType> onValueChangedEvent { get; } = new UnityEvent<int, TListElementType>();
+
+        /// <summary>
+        /// Event triggered when an element in the list is clicked.
+        /// The int parameter represents the index of the clicked element in the full list.
+        /// The TListElementType parameter passes the new changed value.
+        /// Note: The prefab used (TLineElementPreFabType), must implement the <see cref="ITriggerOnValueChange<TListElementType>"/> interface for this event to work.
+        /// </summary>
+        public UnityEvent<int, TListElementType> onValueChangedEvent => _onValueChangedEvent;
+        [SerializeField]
+        [Tooltip("Event triggered when the user changes the value of an element on the list.")]
+        private UnityEvent<int, TListElementType> _onValueChangedEvent = new UnityEvent<int, TListElementType>();
+        //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementValueChanged(int displayElementNumber, TListElementType newValue)
         {
             Debug.Log("Limited list display element value changed: " + displayElementNumber);
             int index = displayElementNumber + currentStartIndex;
             if (!isReadOnly)
+            {
                 fullList[index] = newValue;
-            onValueChangedEvent.Invoke(index, newValue);
+                onValueChangedEvent.Invoke(index, newValue);
+            }
+            else
+            {
+                instantiatedDisplayElements[displayElementNumber].Display(fullList[index]);
+            }
         }
 
+        /// <summary>
+        /// Event triggered when an element in the list becomes visible on screen.  The int parameter represents the index into the full list.
+        /// </summary>
         public UnityEvent<int> onElementInView { get; } = new UnityEvent<int>();
 
 
@@ -137,9 +178,9 @@ namespace EyE.Unity.UI
             int count = fullList.Count;
             float totalListHeight = count * lineElementHeight;
            // totalListHeight += (count-1) * verticalSpacing;
-            contentTransform.sizeDelta = new Vector2(contentTransform.sizeDelta.x, totalListHeight);
+            contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalListHeight);
 
-            float viewHeight = viewRect.rect.height;//.sizeDelta.y;
+            float viewHeight = viewRectTransform.rect.height;//.sizeDelta.y;
             float numElementsThatFitInView = viewHeight / lineElementHeight;
             int numberOfElementsToCreate = Mathf.CeilToInt(numElementsThatFitInView)+2;
             if (count < numberOfElementsToCreate)
@@ -149,7 +190,7 @@ namespace EyE.Unity.UI
             {
                 if (i >= instantiatedDisplayElements.Count)//if element does not exist yet
                 {
-                    TLineElementPreFabType newLineElement = Instantiate<TLineElementPreFabType>(lineElementPreFab, contentTransform);
+                    TLineElementPreFabType newLineElement = Instantiate<TLineElementPreFabType>(lineElementPreFab, contentRectTransform);
                     instantiatedDisplayElements.Add(newLineElement);
                     int displayElementIndex = i;  // this is not the index to the full list element, rather it is the index of the display element of which we have a limited number
                                                   //we put i it into  new var to "descope" it for use below.
@@ -193,7 +234,7 @@ namespace EyE.Unity.UI
         public void Update()
         {
             if (fullList == null || fullList.Count==0) return;
-            float scrollPos = contentTransform.localPosition.y;
+            float scrollPos = contentRectTransform.localPosition.y;
             //see if the user has scrolled enough that we need to reassign/update display values.  if not, do nothing/return
             if (lastScrollPos!= float.NegativeInfinity && Mathf.Abs(scrollPos - lastScrollPos) < lineElementHeight) return;
             lastScrollPos = scrollPos;

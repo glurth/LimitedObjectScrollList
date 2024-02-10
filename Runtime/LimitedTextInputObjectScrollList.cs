@@ -4,8 +4,8 @@ namespace EyE.Unity.UI
 {
     /// <inheritdoc/>
     /// <summary>
-    /// Concrete implementation of a LimitedObjectScrollListBase.  It displays a list that consists of strings, via a TextDisplay prefabs.
-    /// While this list may contain thousands of items, only a few TextDisplay objects, just enough to fill the viewport, will be created in the scene
+    /// Concrete implementation of a LimitedObjectScrollList.  It displays a list that consists of strings, via a TextIO prefabs.
+    /// While this list may contain thousands of items, only a few TextIO objects, just enough to fill the viewport, will be created in the scene
     /// </summary>
     public class LimitedTextInputObjectScrollList : LimitedObjectScrollList<string, TextIO>
     {

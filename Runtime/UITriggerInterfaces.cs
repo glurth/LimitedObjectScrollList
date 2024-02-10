@@ -54,9 +54,45 @@ namespace EyE.Unity.UI
         UnityEvent onClickEvent { get; }
     }
 
-
+    /// <summary>
+    /// Interface for handling value changed events.
+    /// </summary>
     public interface ITriggerOnValueChange<T>
     {
+        /// <summary>
+        /// Event triggered when the UI element's value is changed.
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user of your class to be able to respond to valueChanged events on your UI element.
+        /// </remarks>
         UnityEvent<T> onValueChanged { get; }
+    }
+
+    /// <summary>
+    /// Interface for handling value edit-complete events.
+    /// </summary>
+    public interface ITriggerOnValueEditEnd<T>
+    {
+        /// <summary>
+        /// Event triggered when the UI element's value is done being edited by the user (click away, enter, tab, arrow, etc..).
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user of your class to be able to respond to valueChanged events on your UI element.
+        /// </remarks>
+        UnityEvent<T> onValueEditEnd { get; }
+    }
+
+    /// <summary>
+    /// Interface for handling value validate events.
+    /// </summary>
+    public interface ITriggerOnValueValidate<T>
+    {
+        /// <summary>
+        /// Event triggered when the UI element's value is done being edited by the user (click away, enter, tab, arrow, etc..).
+        /// </summary>
+        /// <remarks>
+        /// Implement this interface if you want the user of your class to be able to respond to valueChanged events on your UI element.
+        /// </remarks>
+        UnityEvent<T> onValueValidate { get; }
     }
 }
