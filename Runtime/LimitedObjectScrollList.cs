@@ -100,6 +100,17 @@ namespace EyE.Unity.UI
             onClickEvent.Invoke(displayElementNumber + currentStartIndex);
         }
 
+        public bool isReadOnly = true;
+        public UnityEvent<int, TListElementType> onValueChangedEvent { get; } = new UnityEvent<int, TListElementType>();
+        void InternalHandleElementValueChanged(int displayElementNumber, TListElementType newValue)
+        {
+            Debug.Log("Limited list display element value changed: " + displayElementNumber);
+            int index = displayElementNumber + currentStartIndex;
+            if (!isReadOnly)
+                fullList[index] = newValue;
+            onValueChangedEvent.Invoke(index, newValue);
+        }
+
         public UnityEvent<int> onElementInView { get; } = new UnityEvent<int>();
 
 
@@ -156,6 +167,9 @@ namespace EyE.Unity.UI
                         hoverable.onPointerEnterEvent.AddListener(() => { InternalHandleElementPointerEnter(displayElementIndex); });
                         hoverable.onPointerExitEvent.AddListener(() => { InternalHandleElementPointerExit(displayElementIndex); });
                     }
+                    ITriggerOnValueChange<TListElementType> changeable = newLineElement.GetComponentInChildren<ITriggerOnValueChange<TListElementType>>();
+                    if (changeable != null)
+                        changeable.onValueChanged.AddListener((TListElementType data) => { InternalHandleElementValueChanged(displayElementIndex, data); });
                 }
                 TLineElementPreFabType displayElement = instantiatedDisplayElements[i];
                 displayElement.gameObject.SetActive(true);

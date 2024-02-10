@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+
 namespace EyE.Unity.UI
 {
     /// <summary>
@@ -7,6 +8,12 @@ namespace EyE.Unity.UI
     /// </summary>
     public class TextDisplay : MonoBehaviour, IDisplay<string>
     {
+        private void Reset()
+        {
+            if(textControl==null)
+                textControl = GetComponent<TextMeshProUGUI>();
+        }
+
         public TextMeshProUGUI textControl;
         /// <summary>
         /// set the TextMeshProUGUI member to display the provided string

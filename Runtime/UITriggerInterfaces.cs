@@ -55,5 +55,8 @@ namespace EyE.Unity.UI
     }
 
 
-
+    public interface ITriggerOnValueChange<T>
+    {
+        UnityEvent<T> onValueChanged { get; }
+    }
 }
