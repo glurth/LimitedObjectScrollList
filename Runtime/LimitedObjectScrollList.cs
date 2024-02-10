@@ -32,17 +32,16 @@ namespace EyE.Unity.UI
         /// The ScrollRect responsible for scrolling the list.
         /// </summary>
         [Tooltip("The ScrollRect responsible for scrolling the list.")]
-        public ScrollRect controller;
+        public ScrollRect controllerScrollRect;
+
         /// <summary>
         /// The RectTransform representing the view area of the scrollable list- this is usually a child AND member of the ScrollRect
         /// </summary>
-        [Tooltip("The RectTransform representing the view area of the scrollable list- this is usually a child AND member of the ScrollRect")]
-        public RectTransform viewRectTransform;
+        RectTransform viewRectTransform=>controllerScrollRect.viewport;
         /// <summary>
         /// The RectTransform representing the content area of the scrollable list- this is usually a child AND member of the ScrollRect
         /// </summary>
-        [Tooltip("The RectTransform representing the content area of the scrollable list- this is usually a child AND member of the ScrollRect")]
-        public RectTransform contentRectTransform;
+        RectTransform contentRectTransform=>controllerScrollRect.content;
 
         //stores a reference to the full list of data to be displayed
         List<TListElementType> fullList;
@@ -88,6 +87,7 @@ namespace EyE.Unity.UI
         //this function is added as a listener to prefabs when they are instantiated.
         void InternalHandleElementPointerEnter(int displayElementNumber)
         {
+            //add currentStartIndex to convert from display index to fullList index
             onPointerEnterEvent.Invoke(displayElementNumber + currentStartIndex);
         }
 
@@ -181,7 +181,7 @@ namespace EyE.Unity.UI
             }
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Event triggered when an element in the list has it's value changed by the user.
         /// The int parameter represents the index of the clicked element in the full list.
         /// The TListElementType parameter passes the new changed value.
@@ -205,6 +205,7 @@ namespace EyE.Unity.UI
                 instantiatedDisplayElements[displayElementNumber].Display(fullList[index]);
             }
         }
+        */
 
         /// <summary>
         /// Gets a value indicating whether any item in the scroll list currently has focus.
@@ -219,7 +220,7 @@ namespace EyE.Unity.UI
         }
 
         /// <summary>
-        /// Sets the full list of elements to be displayed in the scroll list.
+        /// Main Function: Sets the full list of elements to be displayed in the scroll list.
         /// </summary>
         /// <param name="fullList">The full list of elements.</param>
         public void SetList(List<TListElementType> fullList)
