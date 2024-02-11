@@ -1,5 +1,5 @@
 {
-  "name": "com.glurth.limittedobjectscrollist",
+  "name": "com.glurth.limitedobjectscrollist",
   "version": "1.0.0",
   "displayName": "LimitedObjectScrollList",
   "description": "Displays scroll list using minimal scene objects",
