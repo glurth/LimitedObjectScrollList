@@ -2,10 +2,10 @@
 using TMPro;
 using UnityEngine.Events;
 
-namespace EyE.Unity.UI
+namespace EyE.Unity.UI.Templates
 {
     /// <summary>
-    /// Provides access to a TMP_InputField object via the IDisplay<string>, and ITriggerOnChange<string> interface
+    /// Provides access to a TMP_InputField object via the IDisplay<string>, ITriggerOnValueChange<string> and ITriggerOnValueEditEnd<string> interfaces.  To use it, just add this component to an object with a TMP_InputField component.
     /// </summary>
     public class TextIO : MonoBehaviour, IDisplay<string>, ITriggerOnValueChange<string>, ITriggerOnValueEditEnd<string>//, ITriggerOnValueValidate<string>
     {

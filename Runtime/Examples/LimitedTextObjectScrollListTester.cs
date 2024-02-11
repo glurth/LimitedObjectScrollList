@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-
-namespace EyE.Unity.UI
+using EyE.Unity.UI.Templates;
+namespace EyE.Unity.UI.Examples
 {
+
     /// <inheritdoc/>
     /// <summary>
-    /// Concrete implementation of a LimitedObjectScrollListBase.  It displays a list that consists of strings, via a TextDisplay prefabs.
-    /// While this list may contain thousands of items, only a few TextDisplay objects, just enough to fill the viewport, will be created in the scene
+    /// Example showing a list of some values being displayed.
     /// </summary>
-    public class LimitedTextObjectScrollList : LimitedObjectScrollList<string, TextDisplay>
+    public class LimitedTextObjectScrollListTester : LimitedTextObjectScrollListTemplate
     {
         /// <summary>
         /// This is the list that will be displayed by the LimitedObjectScrollList.

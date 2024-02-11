@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using TMPro;
 
-namespace EyE.Unity.UI
+namespace EyE.Unity.UI.Templates
 {
     /// <summary>
-    /// Provides access to a TextMeshProUGUI object via the IDisplay<string> interface
+    /// Provides access to a TextMeshProUGUI object via the IDisplay<string> interface.  To use it, just add this component to an object with a TextMeshProUGUI component.
     /// </summary>
     public class TextDisplay : MonoBehaviour, IDisplay<string>
     {
