@@ -298,7 +298,7 @@ namespace EyE.Unity.UI
             //see if the user has scrolled enough that we need to reassign/update display values.  if not, do nothing/return
             if (lastScrollPos!= float.NegativeInfinity && Mathf.Abs(scrollPos - lastScrollPos) < lineElementHeight) return;
             lastScrollPos = scrollPos;
-            int startIndex = Mathf.FloorToInt(scrollPos / lineElementHeight);
+            int startIndex = Mathf.FloorToInt(scrollPos / lineElementHeight)-1;
             if (startIndex < 0) startIndex = 0;
             currentStartIndex = startIndex;// record in a member for use by event triggers
             float startIndexPos = startIndex * lineElementHeight;
